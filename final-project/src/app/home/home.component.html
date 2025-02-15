@@ -1,0 +1,50 @@
+<img src="./assets/5.jpeg" class="page" alt="">
+
+<div class="container">
+  <!-- Fotoğraf Yükleme Bölümü -->
+  <div class="upload-box">
+    <!-- Fotoğraf Yükle Butonu -->
+<button (click)="fileInput.click()">Select File</button>
+
+<!-- Dosya Seçme Input -->
+<input 
+  #fileInput 
+  type="file" 
+  style="display: none;" 
+  (change)="onFileSelected($event)" 
+  title="Choose an image file" 
+  placeholder="No file selected" />
+
+<!-- Yükleme Butonu -->
+<button (click)="onUpload()" [disabled]="!selectedFile">Upload</button>
+
+<!-- Durum Mesajı -->
+<!-- <p>{{ status }}</p> -->
+
+  </div>
+  
+
+  <!-- Kamera Bölümü -->
+  <div class="camera-box">
+    <!-- Kamera izni verilmediyse buton görünsün -->
+    <button *ngIf="btnVisible" (click)="checkPermission()">Check the webcam</button>
+    
+    <!-- Kamera izni verildiyse webcam görüntüsü ve fotoğraf çekme butonu görünsün -->
+    <div *ngIf="cameraVisible">
+      <webcam #webcam [trigger]="triggerObservable" (imageCapture)="handleImage($event)" [width]="400" [height]="230"></webcam>
+      <button class="captureImage" (click)="captureImage()">{{btnLabel}}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Görüntü Önizleme ve İndirme Bölümü -->
+<div class="button-container" *ngIf="previewImage">
+  <button (click)="uploadCapturedImage()">Download Image</button>
+</div>
+
+<!-- Kamera durumu mesajı -->
+ <!--
+<div *ngIf="status">
+  <p>{{ status }}</p>
+</div> 
+-->

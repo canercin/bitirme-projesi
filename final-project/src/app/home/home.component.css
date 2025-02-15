@@ -1,0 +1,130 @@
+.page {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100vw; 
+  height: 100vh; 
+  z-index: -1; 
+  object-fit: cover; /* Resmi tam ekrana uyacak şekilde kırparak yerleştir */
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  gap: 80px; /* İki kutu arasındaki boşluk */
+  height: 100%; 
+  width: 800px;
+  margin: auto;
+}
+
+.upload-box {
+  position: relative;
+  width: 430px;
+  height: 350px;
+  border: 1px solid #333; 
+  border-radius: 10px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px; 
+  background-color: #fff; 
+  box-shadow: 0 2px 5px rgba(73, 71, 71, 0.2); 
+}
+
+.camera-box {
+  width: 430px;
+  height: 350px;
+  border: 1px solid #333; 
+  border-radius: 10px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px; /* İçerik ile kenarlar arasında boşluk */
+  background-color: #fff; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+}
+
+.camera-box h4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center; 
+  margin: 0;
+}
+
+h3 {
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+/* Dosya yükleme alanını gizle */
+input[type="file"] {
+  display: none; /* Geri planda dosya yükleme alanını gizle */
+}
+
+
+.file-upload-label {
+  background-color: #e4c1d7; 
+  color: #070606; 
+  padding: 10px 15px; 
+  border-radius: 5px; 
+  cursor: pointer; 
+  text-align: center; 
+  transition: background-color 0.3s; 
+  position: absolute;
+  top: 220px;
+}
+
+.captureImage {
+  position: absolute; 
+  left: 64%; 
+  bottom: 200px;
+  transform: translateX(-50%); 
+}
+
+
+.file-upload-label:hover {
+  background-color: #788ea7; 
+}
+
+/* Sabit butonlar için stil */
+.button-container {
+  position: fixed;
+  bottom: 20px; /* Ekranın altından 20px uzaklık */
+  right: 20px;  /* Ekranın sağından 20px uzaklık */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Butonlar arasındaki boşluk */
+  z-index: 10; /* Üstte görünmesi için */
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #52534b;
+  color: white;
+  border: none;
+}
+
+button:hover {
+  background-color: #1a1c1d;
+}
+
+/* Select File ve Upload butonları arasına boşluk ekleme */
+.upload-box button {
+  margin-bottom: 10px; /* Butonlar arasına boşluk ekler */
+}
