@@ -3,6 +3,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 import model
 import os
+import datetime
+import uuid
 
 app = Flask(__name__)
 CORS(app)  # Frontend ile iletişim için CORS'u aktif ediyoruz
@@ -37,24 +39,33 @@ def upload_file():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
-    # Dosya adını güvenli hale getirme
-    filename = file.filename
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    # Dosya adını güvenli hale getirme ve timestamp ekleyelim
+    original_filename = file.filename
+    # Dosya uzantısını ayır
+    file_ext = os.path.splitext(original_filename)[1]
+    # Benzersiz bir dosya adı oluştur: timestamp_uuid.uzantı
+    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    unique_id = str(uuid.uuid4().hex[:8])  # UUID'nin kısa versiyonu
+    new_filename = f"{timestamp}_{unique_id}{file_ext}"
 
-    cnn_model = model.load_selected_model(0)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
 
     try:
         # Dosyayı sunucuda kaydet
         file.save(filepath)
 
-        model.predict_image(cnn_model, filepath)
+        model.run_full_system(filepath)
 
-        # Dosya bilgilerini veritabanına kaydet
-        new_photo = Photo(filename=filename, filepath=filepath)
+        # Dosya bilgilerini veritabanına kaydet - orijinal adını da saklayalım
+        new_photo = Photo(filename=new_filename, filepath=filepath)
         db.session.add(new_photo)
         db.session.commit()
 
-        return jsonify({'message': 'File uploaded successfully', 'filename': filename, 'filepath': filepath}), 200
+        return jsonify({
+            'message': 'File uploaded successfully',
+            'saved_filename': new_filename,
+            'filepath': filepath
+        }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -66,3 +77,4 @@ def get_photos():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
