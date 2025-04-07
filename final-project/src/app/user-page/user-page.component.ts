@@ -18,7 +18,7 @@ export class UserPageComponent {
   public status: string = ''; // Kamera durumu için mesaj
   selectedFile: File | null = null;
   uploadUrl = 'http://localhost:5000/upload';  // Flask backend URL'i
- 
+  isSidebarOpen: boolean = false;
 
   // Webcam tetikleyicisini döndürüyoruz
   public get triggerObservable() {
@@ -113,6 +113,12 @@ export class UserPageComponent {
     } else {
       this.status = 'Please select a file first!';
     }
+  }
+
+  // Sidebar'ı açıp kapatan fonksiyon
+  toggleSidebar(): void {
+    console.log('Sidebar toggle edildi');
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 }
 

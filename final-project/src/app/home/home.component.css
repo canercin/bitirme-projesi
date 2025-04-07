@@ -1,64 +1,312 @@
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-300px);
-  }
-  to {
-    transform: translateX(0);
-  }
- 
-}
-.slideInLeft {
-  animation: slideInLeft 1s ease-in;
-  text-align: center;
-  font-family: "Embed code";
+.home-page {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  position: relative;
+  overflow: hidden;
 }
 
+/* DNA Animasyonu */
+.dna-helix {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.1;
+  animation: rotate 20s linear infinite;
+}
+
+.dna-strand {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: repeating-linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 40%,
+      #00ff9d 40%,
+      #00ff9d 50%,
+      transparent 50%,
+      transparent 90%,
+      #00ff9d 90%,
+      #00ff9d 100%
+  );
+  left: 50%;
+  transform-origin: top;
+}
+
+.dna-strand:nth-child(1) { transform: rotate(0deg) translateX(20px); }
+.dna-strand:nth-child(2) { transform: rotate(90deg) translateX(20px); }
+.dna-strand:nth-child(3) { transform: rotate(180deg) translateX(20px); }
+.dna-strand:nth-child(4) { transform: rotate(270deg) translateX(20px); }
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Molekül Animasyonları */
+.molecule {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #00ff9d, transparent);
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+}
+
+.molecule-1 {
+  width: 300px;
+  height: 300px;
+  top: -150px;
+  right: -150px;
+}
+
+.molecule-2 {
+  width: 200px;
+  height: 200px;
+  bottom: -100px;
+  left: -100px;
+  animation-delay: -2s;
+}
+
+.molecule-3 {
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  left: 10%;
+  animation-delay: -4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Header Stili */
 .header {
-  position: fixed; /* Sayfanın en üstüne sabitler */
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%; /* Sayfanın tamamını kaplar */
-  height: 60px; /* Daha büyük bir header */
-  background: #1b1a1a;
+  width: 100%;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
-  color: white;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
-  font-size: 28px;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.logo i {
+  font-size: 24px;
+  color: #00ff9d;
+}
+
+.logo span {
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .buttons {
   display: flex;
-  gap: 15px; 
+  gap: 15px;
 }
 
-button.login {
-  background: white;
-  color: #000000;
-  border: 2px solid white;
-  padding: 5px 6px;
-  border-radius: 5px;
-  cursor: pointer;
+.login-btn, .signup-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-button.sign-up {
-  background: white;
-  color: #000000;
-  border: 2px solid white;
-  padding: 5px 6px;
-  border-radius: 5px;
-  cursor: pointer;
+.login-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
-img {
-  width: 500px;
-  height: 500px;
-  margin-top: -90px;
+.signup-btn {
+  background: linear-gradient(45deg, #00ff9d, #00b8ff);
+  color: #1a1a2e;
 }
 
+.login-btn:hover, .signup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
+}
+
+/* Ana İçerik */
+.main-content {
+  padding-top: 80px;
+  width: 100%;
+}
+
+/* Hero Bölümü */
+.hero-section {
+  width: 100%;
+  padding: 4rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.hero-text {
+  padding-left: 2rem;
+}
+
+.hero-image {
+  padding-right: 2rem;
+}
+
+.hero-text h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.hero-text p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.primary-btn, .secondary-btn {
+  padding: 12px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.primary-btn {
+  background: linear-gradient(45deg, #00ff9d, #00b8ff);
+  color: #1a1a2e;
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.primary-btn:hover, .secondary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
+}
+
+.hero-image img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Özellikler Bölümü */
+.features-section {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 4rem 0;
+  width: 100%;
+}
+
+.features-section h2 {
+  text-align: center;
+  color: #fff;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.features-grid {
+  width: 100%;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
+}
+
+.feature-card i {
+  font-size: 2.5rem;
+  color: #00ff9d;
+  margin-bottom: 1.5rem;
+}
+
+.feature-card h3 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .hero-text {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .hero-image {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .hero-text h1 {
+    font-size: 2.5rem;
+  }
+
+  .cta-buttons {
+    justify-content: center;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+  }
+}

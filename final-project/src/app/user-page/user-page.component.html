@@ -1,4 +1,34 @@
-<img src="./assets/5.jpeg" class="page" alt="">
+<!-- Background Image -->
+<img src="./assets/7.jpeg" class="page" alt="">
+
+
+
+
+<!-- Toggle Button - her zaman görünür -->
+<button class="global-toggle-btn" (click)="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar -->
+<div class="sidebar-container">
+  <div class="sidebar" [class.active]="isSidebarOpen">
+    <div class="sidebar-header">
+      <h3>Menü</h3>
+    </div>
+    <div class="sidebar-content">
+      <ul>
+        <li><a href="#"><i class="fas fa-user-injured"></i> Hastalar</a></li>
+        <li>
+          <a [routerLink]="['/results']" routerLinkActive="router-link-active" class="results">
+            <i class="fas fa-file-medical"></i>
+            Sonuçlar
+          </a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
 
 <div class="container">
   <!-- Fotoğraf Yükleme Bölümü -->
@@ -35,6 +65,28 @@
       <button class="captureImage" (click)="captureImage()">{{btnLabel}}</button>
     </div>
   </div>
+</div>
+
+<!-- Radio Butonlar -->
+<div class="radio-container">
+  <div class="radio-group">
+    <input type="radio" id="option1" name="options" value="option1">
+    <label for="option1">Cilt Kanseri</label>
+
+    <input type="radio" id="option2" name="options" value="option2">
+    <label for="option2">Beyin Tümörü</label>
+
+    <input type="radio" id="option3" name="options" value="option3">
+    <label for="option3">Meme Kanseri</label>
+
+    <input type="radio" id="option4" name="options" value="option4">
+    <label for="option4">Kan Hücre Çeşitleri</label>
+  </div>
+</div>
+
+<!-- Tara Butonu -->
+<div class="scan-button-container">
+  <button class="scan-button">Tara</button>
 </div>
 
 <!-- Görüntü Önizleme ve İndirme Bölümü -->
