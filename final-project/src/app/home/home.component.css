@@ -95,24 +95,24 @@
 
 .header-content {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem 2rem;
+  margin: 0;
+  padding: 1rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: #fff;
-  text-decoration: none;
+  gap: 1rem;
+  margin-left: 0;
 }
 
-.logo i {
-  font-size: 24px;
-  color: #00ff9d;
+.logo-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
 }
 
 .logo span {

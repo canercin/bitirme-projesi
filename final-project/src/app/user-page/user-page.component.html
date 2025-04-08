@@ -17,7 +17,12 @@
     </div>
     <div class="sidebar-content">
       <ul>
-        <li><a href="#"><i class="fas fa-user-injured"></i> Hastalar</a></li>
+        <li>
+          <a [routerLink]="['/user2']" routerLinkActive="router-link-active" class="results">
+            <i class="fas fa-file-medical"></i>
+            Hastalar
+          </a>
+        </li>
         <li>
           <a [routerLink]="['/results']" routerLinkActive="router-link-active" class="results">
             <i class="fas fa-file-medical"></i>
@@ -58,7 +63,11 @@
   <div class="camera-box">
     <!-- Kamera izni verilmediyse buton görünsün -->
     <button *ngIf="btnVisible" (click)="checkPermission()">Check the webcam</button>
-    
+    <br>
+    <button [routerLink]="['/user3']" routerLinkActive="router-link-active" class="results">
+      <i class="fas fa-file-medical"></i>
+      Canlı İzleme
+    </button>
     <!-- Kamera izni verildiyse webcam görüntüsü ve fotoğraf çekme butonu görünsün -->
     <div *ngIf="cameraVisible">
       <webcam #webcam [trigger]="triggerObservable" (imageCapture)="handleImage($event)" [width]="400" [height]="230"></webcam>

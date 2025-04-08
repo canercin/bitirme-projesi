@@ -1,0 +1,25 @@
+<div class="user3-container">
+  <div class="video-section">
+    <div class="video-box">
+      <h3>Kamera Görüntüsü</h3>
+      <div class="video-container">
+        <video #videoPlayer autoplay playsinline></video>
+      </div>
+    </div>
+  </div>
+
+  <div class="control-section">
+    <button class="control-btn stop" (click)="stopVideo()" [disabled]="!isPlaying && !isPaused">
+      <i class="fas fa-stop"></i>
+      <span>İşlemi Durdur</span>
+    </button>
+    <button class="control-btn pause" (click)="togglePause()" [disabled]="!isPlaying && !isPaused" *ngIf="!isPaused">
+      <i class="fas fa-pause"></i>
+      <span>Durdur</span>
+    </button>
+    <button class="control-btn resume" (click)="togglePause()" [disabled]="false" *ngIf="isPaused">
+      <i class="fas fa-play"></i>
+      <span>Devam Et</span>
+    </button>
+  </div>
+</div>
