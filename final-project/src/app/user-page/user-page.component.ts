@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { WebcamImage } from 'ngx-webcam';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-page',
@@ -19,6 +20,7 @@ export class UserPageComponent {
   selectedFile: File | null = null;
   uploadUrl = 'http://localhost:5000/upload';  // Flask backend URL'i
   isSidebarOpen: boolean = false;
+  selectedImageUrl: string | null = null;
 
   // Webcam tetikleyicisini döndürüyoruz
   public get triggerObservable() {
@@ -88,10 +90,17 @@ export class UserPageComponent {
     this.status = ''; // Kamera durumu mesajını temizliyoruz
   }
   
-  constructor(private http: HttpClient) {}  
+  constructor(private http: HttpClient, private router: Router) {}  
    // Dosya seçildiğinde çağrılacak fonksiyon
    onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.selectedImageUrl = e.target.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
 
   // Fotoğrafı backend'e gönderme
@@ -101,9 +110,17 @@ export class UserPageComponent {
       formData.append('image', this.selectedFile, this.selectedFile.name);
 
       this.http.post(this.uploadUrl, formData).subscribe(
-        (response) => {
-          this.status = 'File uploaded successfully!';
-          console.log(response);
+        (response: any) => {
+          if (response.cancer_status === 'Cancer') {
+            this.router.navigate(['/user2'], {
+              queryParams: {
+                original_filename: response.saved_filename,
+                result_filename: response.result_filename
+              }
+            });
+          } else {
+            alert('Kanser tespit edilmedi. Lütfen başka bir görüntü deneyin.');
+          }
         },
         (error) => {
           this.status = 'Error uploading file';

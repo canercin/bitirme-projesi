@@ -14,7 +14,7 @@ def load_selected_model(model_type):
         return model
     elif model_type == 1:
         # U-Net modelini yükle
-        model = load_model('models/unet.keras')
+        model = load_model('models/segm.keras')
         print("U-Net modeli yüklendi")
         return model
     else:
@@ -103,6 +103,6 @@ def run_full_system(image_path):
     # JPG olarak kaydet, kalite parametresi ekle
     cv2.imwrite(result_image_path, result_of_unet * 255, [cv2.IMWRITE_JPEG_QUALITY, 95])
     
-    # CNN sonucunu, orijinal resim yolu ve sonuç görsel yolunu döndür
-    return result_of_cnn, result_image_path, "Kanser tespit edildi ve segmentasyon tamamlandı."
+    # CNN sonucunu ve sadece dosya adını döndür
+    return result_of_cnn, result_filename, "Kanser tespit edildi ve segmentasyon tamamlandı."
 

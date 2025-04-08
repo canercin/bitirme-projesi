@@ -18,7 +18,7 @@
     <div class="sidebar-content">
       <ul>
         <li>
-          <a [routerLink]="['/user2']" routerLinkActive="router-link-active" class="results">
+          <a class="results">
             <i class="fas fa-file-medical"></i>
             Hastalar
           </a>
@@ -38,20 +38,27 @@
 <div class="container">
   <!-- Fotoğraf Yükleme Bölümü -->
   <div class="upload-box">
+    <!-- Seçilen Resim -->
+    <img *ngIf="selectedImageUrl" [src]="selectedImageUrl" alt="Seçilen Resim" class="selected-image">
+    
     <!-- Fotoğraf Yükle Butonu -->
-<button (click)="fileInput.click()">Select File</button>
+    <button *ngIf="!selectedImageUrl" (click)="fileInput.click()">Select File</button>
 
-<!-- Dosya Seçme Input -->
-<input 
-  #fileInput 
-  type="file" 
-  style="display: none;" 
-  (change)="onFileSelected($event)" 
-  title="Choose an image file" 
-  placeholder="No file selected" />
+    <!-- Dosya Seçme Input -->
+    <input 
+      #fileInput 
+      type="file" 
+      style="display: none;" 
+      (change)="onFileSelected($event)" 
+      title="Choose an image file" 
+      placeholder="No file selected" />
 
+  
 <!-- Yükleme Butonu -->
+<!-- 
 <button (click)="onUpload()" [disabled]="!selectedFile">Upload</button>
+-->
+
 
 <!-- Durum Mesajı -->
 <!-- <p>{{ status }}</p> -->
@@ -61,8 +68,8 @@
 
   <!-- Kamera Bölümü -->
   <div class="camera-box">
-    <!-- Kamera izni verilmediyse buton görünsün -->
-    <button *ngIf="btnVisible" (click)="checkPermission()">Check the webcam</button>
+    <!-- Kamera izni verilmediyse buton görünsün 
+    <button *ngIf="btnVisible" (click)="checkPermission()">Check the webcam</button>-->
     <br>
     <button [routerLink]="['/user3']" routerLinkActive="router-link-active" class="results">
       <i class="fas fa-file-medical"></i>
@@ -95,7 +102,7 @@
 
 <!-- Tara Butonu -->
 <div class="scan-button-container">
-  <button class="scan-button">Tara</button>
+  <button (click)="onUpload()" [disabled]="!selectedFile" class="scan-button">Tara</button>
 </div>
 
 <!-- Görüntü Önizleme ve İndirme Bölümü -->

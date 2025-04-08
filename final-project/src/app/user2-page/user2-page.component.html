@@ -1,16 +1,13 @@
 <div class="user2-container">
-  <div class="image-section">
+  <div class="image-container">
     <div class="image-box">
       <h3>Orijinal Görüntü</h3>
-      <div class="image-container">
-        <img src="" alt="Orijinal Görüntü">
-      </div>
+      <img [src]="'http://localhost:5000/uploads/' + originalImagePath" alt="Orijinal Görüntü" class="result-image">
     </div>
+    
     <div class="image-box">
       <h3>Segmentasyon Sonucu</h3>
-      <div class="image-container">
-        <img src="" alt="Segmentasyon Sonucu">
-      </div>
+      <img [src]="'http://localhost:5000/results/' + resultImagePath" alt="Segmentasyon Sonucu" class="result-image">
     </div>
   </div>
 
