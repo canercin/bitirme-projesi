@@ -11,26 +11,22 @@ export class User3PageComponent implements AfterViewInit {
   isPlaying: boolean = false;
   stream: MediaStream | null = null;
 
-  async ngAfterViewInit() {
+  async startCamera() {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({ video: true });
       if (this.videoPlayer) {
         this.videoPlayer.nativeElement.srcObject = this.stream;
         this.isPlaying = true;
-        
-        this.videoPlayer.nativeElement.addEventListener('playing', () => {
-          this.isPlaying = true;
-          this.isPaused = false;
-        });
-        this.videoPlayer.nativeElement.addEventListener('pause', () => {
-          this.isPlaying = false;
-          this.isPaused = true;
-        });
+        this.isPaused = false;
       }
     } catch (error) {
       console.error('Kamera erişimi hatası:', error);
       alert('Kameraya erişim sağlanamadı. Lütfen kamera izinlerini kontrol edin.');
     }
+  }
+
+  async ngAfterViewInit() {
+    await this.startCamera();
   }
 
   stopVideo() {
@@ -39,12 +35,15 @@ export class User3PageComponent implements AfterViewInit {
       this.stream.getTracks().forEach(track => track.stop());
       this.isPlaying = false;
       this.isPaused = false;
+      this.stream = null;
     }
   }
 
-  togglePause() {
-    if (this.videoPlayer && this.stream) {
-      if (this.isPaused) {
+  async togglePause() {
+    if (this.isPaused) {
+      if (!this.stream) {
+        await this.startCamera();
+      } else {
         this.stream.getTracks().forEach(track => track.enabled = true);
         this.videoPlayer.nativeElement.play()
           .then(() => {
@@ -54,7 +53,9 @@ export class User3PageComponent implements AfterViewInit {
           .catch(error => {
             console.error('Video oynatma hatası:', error);
           });
-      } else {
+      }
+    } else {
+      if (this.videoPlayer && this.stream) {
         this.stream.getTracks().forEach(track => track.enabled = false);
         this.videoPlayer.nativeElement.pause();
         this.isPaused = true;

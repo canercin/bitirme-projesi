@@ -9,15 +9,15 @@
   </div>
 
   <div class="control-section">
-    <button class="control-btn stop" (click)="stopVideo()" [disabled]="!isPlaying">
+    <button class="control-btn stop" (click)="stopVideo()" [disabled]="!isPlaying && !isPaused">
       <i class="fas fa-stop"></i>
       <span>İşlemi Durdur</span>
     </button>
-    <button class="control-btn pause" (click)="togglePause()" [disabled]="!isPlaying" *ngIf="!isPaused">
+    <button class="control-btn pause" (click)="togglePause()" [disabled]="!isPlaying && !isPaused" *ngIf="!isPaused">
       <i class="fas fa-pause"></i>
       <span>Durdur</span>
     </button>
-    <button class="control-btn resume" (click)="togglePause()" [disabled]="!isPlaying" *ngIf="isPaused">
+    <button class="control-btn resume" (click)="togglePause()" [disabled]="false" *ngIf="isPaused">
       <i class="fas fa-play"></i>
       <span>Devam Et</span>
     </button>
