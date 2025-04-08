@@ -41,9 +41,9 @@ def upload_file():
 
     # Dosya adını güvenli hale getirme ve timestamp ekleyelim
     original_filename = file.filename
-    # Dosya uzantısını ayır
-    file_ext = os.path.splitext(original_filename)[1]
-    # Benzersiz bir dosya adı oluştur: timestamp_uuid.uzantı
+    # Dosya uzantısını jpg olarak belirle, orijinal uzantıyı yoksay
+    file_ext = '.jpg'
+    # Benzersiz bir dosya adı oluştur: timestamp_uuid.jpg
     timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     unique_id = str(uuid.uuid4().hex[:8])  # UUID'nin kısa versiyonu
     new_filename = f"{timestamp}_{unique_id}{file_ext}"
@@ -54,17 +54,28 @@ def upload_file():
         # Dosyayı sunucuda kaydet
         file.save(filepath)
 
-        model.run_full_system(filepath)
+        # Model sonuçlarını al
+        cnn_result, unet_result_path, message = model.run_full_system(filepath)
 
-        # Dosya bilgilerini veritabanına kaydet - orijinal adını da saklayalım
+        # CNN sonucu (0: Kanser, 1: Kanser değil)
+        cancer_status = "Not Cancer" if cnn_result == 1 else "Cancer"
+
+        # Dosya bilgilerini veritabanına kaydet
         new_photo = Photo(filename=new_filename, filepath=filepath)
         db.session.add(new_photo)
         db.session.commit()
 
+        result_filename = None
+        if unet_result_path:
+            result_filename = os.path.basename(unet_result_path)
+
         return jsonify({
-            'message': 'File uploaded successfully',
+            'message': message,
+            'cancer_status': cancer_status,
             'saved_filename': new_filename,
-            'filepath': filepath
+            'original_image_path': filepath,
+            'result_image_path': unet_result_path,
+            'result_filename': result_filename
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -77,4 +88,3 @@ def get_photos():
 
 if __name__ == '__main__':
     app.run(debug=True)
-

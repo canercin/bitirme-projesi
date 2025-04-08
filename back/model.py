@@ -1,10 +1,10 @@
 import time
-
 import tensorflow as tf
 import numpy as np
 import cv2
 from keras.api.models import load_model
 from keras.api.preprocessing import image
+import os
 
 def load_selected_model(model_type):
     if model_type == 0:
@@ -85,11 +85,24 @@ def run_full_system(image_path):
     result_of_cnn = predict_image_cnn(cnn_model, image_path)
 
     if result_of_cnn == 1:
-        raise ValueError("CNN modeli kanser tespit edemedi. U-Net modeli çalıştırılmayacak.")
+        return result_of_cnn, None, "CNN modeli kanser tespit edemedi. U-Net modeli çalıştırılmadı."
 
     unet_model = load_selected_model(1)
     result_of_unet = predict_image_unet(unet_model, image_path)
 
-    # timestamp ismi ile kaydet
-    cv2.imwrite(f"results/{int(time.time())}.png", result_of_unet * 255, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+    # Orijinal resmin adını al ve _segmented ekle
+    original_filename = os.path.basename(image_path)
+    filename_without_ext = os.path.splitext(original_filename)[0]
+    result_filename = f"{filename_without_ext}_segmented.jpg"
+    result_image_path = os.path.join("results", result_filename)
+
+    # Eğer results dizini yoksa oluştur
+    if not os.path.exists("results"):
+        os.makedirs("results")
+
+    # JPG olarak kaydet, kalite parametresi ekle
+    cv2.imwrite(result_image_path, result_of_unet * 255, [cv2.IMWRITE_JPEG_QUALITY, 95])
+    
+    # CNN sonucunu, orijinal resim yolu ve sonuç görsel yolunu döndür
+    return result_of_cnn, result_image_path, "Kanser tespit edildi ve segmentasyon tamamlandı."
 
