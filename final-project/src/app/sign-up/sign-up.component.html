@@ -17,17 +17,25 @@
             <p>Üye Ol</p>
         </div>
         
-        <form class="signup-form">
+        <form class="signup-form" (ngSubmit)="onSubmit()">
             <div class="input-group">
-                <input type="text" placeholder="Ad Soyad" required>
+                <input type="text" 
+                       [(ngModel)]="username" 
+                       name="username" 
+                       placeholder="Kullanıcı Adı" 
+                       required>
             </div>
             
             <div class="input-group">
-                <input type="email" placeholder="E-posta" required>
+                <input type="password" 
+                       [(ngModel)]="password" 
+                       name="password" 
+                       placeholder="Şifre" 
+                       required>
             </div>
-            
-            <div class="input-group">
-                <input type="password" placeholder="Şifre" required>
+
+            <div *ngIf="errorMessage" class="error-message">
+                {{ errorMessage }}
             </div>
             
             <button type="submit">Üye Ol</button>

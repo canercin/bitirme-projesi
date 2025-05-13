@@ -181,3 +181,14 @@ button:hover {
 .login-link a:hover {
     text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
 }
+
+.error-message {
+    color: #ff4444;
+    text-align: center;
+    margin: 10px 0;
+    font-size: 14px;
+    background-color: rgba(255, 68, 68, 0.1);
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 68, 68, 0.2);
+}

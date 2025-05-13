@@ -11,6 +11,7 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { ResultsComponent } from './results/results.component';
 import { User2PageComponent } from './user2-page/user2-page.component';
 import { User3PageComponent } from './user3-page/user3-page.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { User3PageComponent } from './user3-page/user3-page.component';
     BrowserModule,
     AppRoutingModule, 
     WebcamModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
