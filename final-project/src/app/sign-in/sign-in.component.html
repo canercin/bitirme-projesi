@@ -17,21 +17,39 @@
             <p>Giriş Yap</p>
         </div>
         
-        <form class="signin-form">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="signin-form">
             <div class="input-group">
-                <input type="email" placeholder="E-posta" required>
+                <input 
+                    type="text"
+                    formControlName="username"
+                    placeholder="Kullanıcı Adı"
+                    required
+                >
+                <div class="error-message" *ngIf="loginForm.get('username')?.errors?.['required'] && loginForm.get('username')?.touched">
+                    Kullanıcı adı gereklidir
+                </div>
             </div>
             
             <div class="input-group">
-                <input type="password" placeholder="Şifre" required>
+                <input 
+                    type="password"
+                    formControlName="password"
+                    placeholder="Şifre"
+                    required
+                >
+                <div class="error-message" *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched">
+                    Şifre gereklidir
+                </div>
             </div>
-            <!-- şifremi unuttum
-            <a href="#" class="forgot-link">Şifremi Unuttum?</a>
-        -->
-            <button type="submit">Giriş Yap</button>
+
+            <button type="submit" [disabled]="!loginForm.valid">Giriş Yap</button>
+            
+            <div *ngIf="error" class="error-message">
+                {{ error }}
+            </div>
             
             <div class="register-link">
-                Hesabınız yok mu? <a href="/sign-up">Üye Ol</a>
+                Hesabınız yok mu? <a routerLink="/sign-up">Üye Ol</a>
             </div>
         </form>
     </div>

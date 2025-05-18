@@ -1,15 +1,17 @@
-import { Component, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, ViewChild, OnInit } from '@angular/core';
+import { Subject, Observable } from 'rxjs';
 import { WebcamImage } from 'ngx-webcam';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { PatientService, Patient } from '../services/patient.service';
+import { DiagnosisService, Diagnosis } from '../services/diagnosis.service';
 
 @Component({
   selector: 'app-user-page',
   templateUrl: './user-page.component.html',
   styleUrls: ['./user-page.component.css']
 })
-export class UserPageComponent {
+export class UserPageComponent implements OnInit {
   @ViewChild('webcam') webcam: any; // Webcam bileşenini referans alıyoruz
   trigger: Subject<void> = new Subject();
   previewImage: any = '';
@@ -21,9 +23,14 @@ export class UserPageComponent {
   uploadUrl = 'http://localhost:5000/upload';  // Flask backend URL'i
   isSidebarOpen: boolean = false;
   selectedImageUrl: string | null = null;
+  patients: Patient[] = [];
+  filteredPatients: Patient[] = [];
+  searchTerm: string = '';
+  diagnoses: Diagnosis[] = [];
+  selectedDiagnosis: string = '';
 
   // Webcam tetikleyicisini döndürüyoruz
-  public get triggerObservable() {
+  public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
   }
 
@@ -90,7 +97,12 @@ export class UserPageComponent {
     this.status = ''; // Kamera durumu mesajını temizliyoruz
   }
   
-  constructor(private http: HttpClient, private router: Router) {}  
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private patientService: PatientService,
+    private diagnosisService: DiagnosisService
+  ) {}  
    // Dosya seçildiğinde çağrılacak fonksiyon
    onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
@@ -136,6 +148,51 @@ export class UserPageComponent {
   toggleSidebar(): void {
     console.log('Sidebar toggle edildi');
     this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  ngOnInit(): void {
+    this.loadPatients();
+    this.loadDiagnoses();
+  }
+
+  loadPatients(): void {
+    this.patientService.getPatients().subscribe({
+      next: (data: Patient[]) => {
+        this.patients = data;
+        this.filteredPatients = data;
+      },
+      error: (error: any) => {
+        console.error('Error loading patients:', error);
+      }
+    });
+  }
+
+  loadDiagnoses(): void {
+    this.diagnosisService.getDiagnoses().subscribe({
+      next: (data: Diagnosis[]) => {
+        this.diagnoses = data;
+      },
+      error: (error: any) => {
+        console.error('Error loading diagnoses:', error);
+      }
+    });
+  }
+
+  filterPatients(): void {
+    if (!this.searchTerm) {
+      this.filteredPatients = this.patients;
+      return;
+    }
+    
+    this.filteredPatients = this.patients.filter(patient => 
+      patient.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      patient.lastName.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  }
+
+  onDiagnosisChange(event: any): void {
+    this.selectedDiagnosis = event.target.value;
+    console.log('Selected diagnosis:', this.selectedDiagnosis);
   }
 }
 

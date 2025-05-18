@@ -12,6 +12,10 @@ import { ResultsComponent } from './results/results.component';
 import { User2PageComponent } from './user2-page/user2-page.component';
 import { User3PageComponent } from './user3-page/user3-page.component';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from './services/auth.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { PatientService } from './services/patient.service';
+import { DiagnosisService } from './services/diagnosis.service';
 
 @NgModule({
   declarations: [
@@ -29,9 +33,10 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule, 
     WebcamModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [AuthService, PatientService, DiagnosisService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

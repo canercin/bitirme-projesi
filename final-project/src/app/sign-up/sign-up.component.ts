@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
@@ -8,30 +9,38 @@ import { Router } from '@angular/router';
   styleUrls: ['./sign-up.component.css']
 })
 export class SignUpComponent {
-  username: string = '';
-  password: string = '';
-  errorMessage: string = '';
+  signUpForm: FormGroup;
+  error: string = '';
 
   constructor(
+    private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) { }
+  ) {
+    this.signUpForm = this.formBuilder.group({
+      username: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      userType: ['PATIENT', [Validators.required]] // Default olarak PATIENT seçili
+    });
+  }
 
   onSubmit(): void {
-    if (!this.username || !this.password) {
-      this.errorMessage = 'Lütfen tüm alanları doldurun.';
-      return;
-    }
+    if (this.signUpForm.valid) {
+      const { userType, ...userData } = this.signUpForm.value;
 
-    this.authService.register(this.username, this.password).subscribe(
-      (response) => {
-        console.log('Kayıt başarılı:', response);
-        this.router.navigate(['/sign-in']);
-      },
-      (error) => {
-        console.error('Kayıt hatası:', error);
-        this.errorMessage = 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.';
-      }
-    );
+      this.authService.register(userData, userType).subscribe({
+        next: (response) => {
+          console.log('Registration successful', response);
+          // Başarılı kayıt sonrası login sayfasına yönlendir
+          this.router.navigate(['/sign-in']);
+        },
+        error: (error) => {
+          console.error('Registration failed', error);
+          this.error = error.error?.message || 'Kayıt işlemi başarısız oldu.';
+        }
+      });
+    }
   }
 }

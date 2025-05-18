@@ -81,22 +81,48 @@
       <button class="captureImage" (click)="captureImage()">{{btnLabel}}</button>
     </div>
   </div>
+
+  <!-- Hasta Listesi Bölümü -->
+  <div class="patient-box">
+    <div class="search-container">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="filterPatients()"
+        placeholder="Hasta ara..."
+        class="search-input"
+      >
+    </div>
+    <div class="patient-list">
+      <div *ngFor="let patient of filteredPatients" class="patient-item">
+        <div class="patient-info">
+          <span class="patient-name">{{patient.firstName}} {{patient.lastName}}</span>
+          <span class="patient-details">ID: {{patient.id}}</span>
+        </div>
+      </div>
+      <div *ngIf="filteredPatients.length === 0" class="no-results">
+        Hasta bulunamadı
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Radio Butonlar -->
 <div class="radio-container">
   <div class="radio-group">
-    <input type="radio" id="option1" name="options" value="option1">
-    <label for="option1">Cilt Kanseri</label>
-
-    <input type="radio" id="option2" name="options" value="option2">
-    <label for="option2">Beyin Tümörü</label>
-
-    <input type="radio" id="option3" name="options" value="option3">
-    <label for="option3">Meme Kanseri</label>
-
-    <input type="radio" id="option4" name="options" value="option4">
-    <label for="option4">Kan Hücre Çeşitleri</label>
+    <ng-container *ngFor="let diagnosis of diagnoses">
+      <input 
+        type="radio" 
+        [id]="'diagnosis' + diagnosis.id" 
+        name="diagnosisOptions" 
+        [value]="diagnosis.id"
+        (change)="onDiagnosisChange($event)"
+      >
+      <label [for]="'diagnosis' + diagnosis.id">{{diagnosis.name}}</label>
+    </ng-container>
+    <div *ngIf="diagnoses.length === 0" class="no-diagnoses">
+      Tanı seçenekleri yükleniyor...
+    </div>
   </div>
 </div>
 

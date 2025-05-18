@@ -14,35 +14,80 @@
     <div class="signup-box">
         <div class="signup-header">
             <h1>Kapsül-BioVision</h1>
-            <p>Üye Ol</p>
+            <p>Kayıt Ol</p>
         </div>
         
-        <form class="signup-form" (ngSubmit)="onSubmit()">
-            <div class="input-group">
-                <input type="text" 
-                       [(ngModel)]="username" 
-                       name="username" 
-                       placeholder="Kullanıcı Adı" 
-                       required>
-            </div>
-            
-            <div class="input-group">
-                <input type="password" 
-                       [(ngModel)]="password" 
-                       name="password" 
-                       placeholder="Şifre" 
-                       required>
+
+
+            <div class="form-group">
+                <label for="firstName">Ad</label>
+                <input
+                    type="text"
+                    id="firstName"
+                    formControlName="firstName"
+                    class="form-control"
+                    placeholder="Adınızı girin"
+                >
+                <div class="error-message" *ngIf="signUpForm.get('firstName')?.errors?.['required'] && signUpForm.get('firstName')?.touched">
+                    Ad gereklidir
+                </div>
             </div>
 
-            <div *ngIf="errorMessage" class="error-message">
-                {{ errorMessage }}
+            <div class="form-group">
+                <label for="lastName">Soyad</label>
+                <input
+                    type="text"
+                    id="lastName"
+                    formControlName="lastName"
+                    class="form-control"
+                    placeholder="Soyadınızı girin"
+                >
+                <div class="error-message" *ngIf="signUpForm.get('lastName')?.errors?.['required'] && signUpForm.get('lastName')?.touched">
+                    Soyad gereklidir
+                </div>
             </div>
-            
-            <button type="submit">Üye Ol</button>
-            
-            <div class="login-link">
-                Zaten hesabınız var mı? <a href="/sign-in">Giriş Yap</a>
+
+            <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+              <div class="form-group">
+                  <label for="username">Kullanıcı Adı</label>
+                  <input
+                      type="text"
+                      id="username"
+                      formControlName="username"
+                      class="form-control"
+                      placeholder="Kullanıcı adınızı girin"
+                  >
+                  <div class="error-message" *ngIf="signUpForm.get('username')?.errors?.['required'] && signUpForm.get('username')?.touched">
+                      Kullanıcı adı gereklidir
+                  </div>
+              </div>
+  
+              <div class="form-group">
+                  <label for="password">Şifre</label>
+                  <input
+                      type="password"
+                      id="password"
+                      formControlName="password"
+                      class="form-control"
+                      placeholder="Şifrenizi girin"
+                  >
+                  <div class="error-message" *ngIf="signUpForm.get('password')?.errors?.['required'] && signUpForm.get('password')?.touched">
+                      Şifre gereklidir
+                  </div>
+                  <div class="error-message" *ngIf="signUpForm.get('password')?.errors?.['minlength'] && signUpForm.get('password')?.touched">
+                      Şifre en az 6 karakter olmalıdır
+                  </div>
+              </div>
+
+            <button type="submit" [disabled]="!signUpForm.valid">Kayıt Ol</button>
+
+            <div *ngIf="error" class="error-message">
+                {{ error }}
             </div>
         </form>
+
+        <div class="signin-link">
+            <p>Zaten hesabın var mı? <a routerLink="/sign-in">Giriş Yap</a></p>
+        </div>
     </div>
 </div>
