@@ -94,7 +94,7 @@
       >
     </div>
     <div class="patient-list">
-      <div *ngFor="let patient of filteredPatients" class="patient-item">
+      <div *ngFor="let patient of filteredPatients" class="patient-item" (click)="onPatientSelect(patient.id)" [class.selected]="selectedPatientId === patient.id">
         <div class="patient-info">
           <span class="patient-name">{{patient.firstName}} {{patient.lastName}}</span>
           <span class="patient-details">ID: {{patient.id}}</span>

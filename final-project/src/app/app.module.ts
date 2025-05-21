@@ -16,6 +16,7 @@ import { AuthService } from './services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PatientService } from './services/patient.service';
 import { DiagnosisService } from './services/diagnosis.service';
+import { ExaminationService } from './services/examination.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { DiagnosisService } from './services/diagnosis.service';
     FormsModule,
     ReactiveFormsModule,
   ],
-  providers: [AuthService, PatientService, DiagnosisService],
+  providers: [AuthService, PatientService, DiagnosisService, ExaminationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

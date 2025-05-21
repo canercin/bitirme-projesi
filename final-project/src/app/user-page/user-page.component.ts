@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { PatientService, Patient } from '../services/patient.service';
 import { DiagnosisService, Diagnosis } from '../services/diagnosis.service';
+import { ExaminationService } from '../services/examination.service';
 
 @Component({
   selector: 'app-user-page',
@@ -28,6 +29,7 @@ export class UserPageComponent implements OnInit {
   searchTerm: string = '';
   diagnoses: Diagnosis[] = [];
   selectedDiagnosis: string = '';
+  selectedPatientId: string = '';
 
   // Webcam tetikleyicisini döndürüyoruz
   public get triggerObservable(): Observable<void> {
@@ -101,7 +103,8 @@ export class UserPageComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private patientService: PatientService,
-    private diagnosisService: DiagnosisService
+    private diagnosisService: DiagnosisService,
+    private examinationService: ExaminationService
   ) {}  
    // Dosya seçildiğinde çağrılacak fonksiyon
    onFileSelected(event: any): void {
@@ -117,30 +120,33 @@ export class UserPageComponent implements OnInit {
 
   // Fotoğrafı backend'e gönderme
   onUpload(): void {
-    if (this.selectedFile) {
-      const formData = new FormData();
-      formData.append('image', this.selectedFile, this.selectedFile.name);
-
-      this.http.post(this.uploadUrl, formData).subscribe(
-        (response: any) => {
-          if (response.cancer_status === 'Cancer') {
+    if (this.selectedFile && this.selectedPatientId && this.selectedDiagnosis) {
+      this.examinationService.createExamination(
+        this.selectedFile,
+        this.selectedPatientId,
+        this.selectedDiagnosis
+      ).subscribe({
+        next: (response) => {
+          console.log('Examination created successfully:', response);
+          // Handle success - maybe show a success message or redirect
+          if (response.result?.hasCancer) {
             this.router.navigate(['/user2'], {
               queryParams: {
-                original_filename: response.saved_filename,
-                result_filename: response.result_filename
+                original_filename: response.result.originalImagePath,
+                result_filename: response.result.resultImagePath
               }
             });
           } else {
             alert('Kanser tespit edilmedi. Lütfen başka bir görüntü deneyin.');
           }
         },
-        (error) => {
-          this.status = 'Error uploading file';
-          console.error(error);
+        error: (error) => {
+          console.error('Error creating examination:', error);
+          alert('Muayene oluşturulurken bir hata oluştu.');
         }
-      );
+      });
     } else {
-      this.status = 'Please select a file first!';
+      alert('Lütfen bir dosya seçin, hasta seçin ve tanı seçin.');
     }
   }
 
@@ -157,12 +163,12 @@ export class UserPageComponent implements OnInit {
 
   loadPatients(): void {
     this.patientService.getPatients().subscribe({
-      next: (data: Patient[]) => {
+      next: (data) => {
         this.patients = data;
         this.filteredPatients = data;
       },
-      error: (error: any) => {
-        console.error('Error loading patients:', error);
+      error: (error) => {
+        console.error('Error fetching patients:', error);
       }
     });
   }
@@ -183,16 +189,23 @@ export class UserPageComponent implements OnInit {
       this.filteredPatients = this.patients;
       return;
     }
-    
+
+    const searchTermLower = this.searchTerm.toLowerCase();
     this.filteredPatients = this.patients.filter(patient => 
-      patient.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      patient.lastName.toLowerCase().includes(this.searchTerm.toLowerCase())
+      patient.firstName.toLowerCase().includes(searchTermLower) ||
+      patient.lastName.toLowerCase().includes(searchTermLower) ||
+      patient.id.toLowerCase().includes(searchTermLower)
     );
   }
 
   onDiagnosisChange(event: any): void {
     this.selectedDiagnosis = event.target.value;
     console.log('Selected diagnosis:', this.selectedDiagnosis);
+  }
+
+  onPatientSelect(patientId: string): void {
+    this.selectedPatientId = patientId;
+    console.log('Selected patient:', patientId);
   }
 }
 
