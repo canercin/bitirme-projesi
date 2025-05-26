@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Result {
   id: string;
-  date: string;
   hasCancer: boolean;
   originalImagePath: string;
   resultImagePath: string;
@@ -18,8 +18,8 @@ export interface Diagnosis {
 
 export interface Examination {
   id: string;
-  date: string;
-  result: Result;
+  date: string | null;
+  result: Result | null;
   diagnosis: Diagnosis;
 }
 
@@ -45,12 +45,8 @@ export interface Doctor {
 export interface Patient {
   id: string;
   username: string;
-  password: string;
-  role: string;
   firstName: string;
   lastName: string;
-  doctors: Doctor[];
-  diagnoses: Diagnosis[];
   examinations: Examination[];
 }
 
@@ -58,11 +54,15 @@ export interface Patient {
   providedIn: 'root'
 })
 export class PatientService {
-  private apiUrl = 'http://localhost:8080/api/patient';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
   getPatients(): Observable<Patient[]> {
-    return this.http.get<Patient[]>(this.apiUrl);
+    return this.http.get<Patient[]>(`${this.apiUrl}/patient`);
+  }
+
+  getPatientById(id: string): Observable<Patient> {
+    return this.http.get<Patient>(`${this.apiUrl}/patient/${id}`);
   }
 } 

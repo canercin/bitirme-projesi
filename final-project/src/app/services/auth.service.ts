@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { jwtDecode } from "jwt-decode";
+import { environment } from '../../environments/environment';
 
 export interface UserRequest {
   username: string;
@@ -14,22 +15,21 @@ export interface UserRequest {
 
 export interface AuthResponse {
   token: string;
+  username: string;
 }
 
-export interface DecodedToken {
-  sub: string;        // kullanıcı adı
-  role: string[];     // kullanıcı rolleri
-  exp: number;        // token'ın son kullanma tarihi
-  iat: number;        // token'ın oluşturulma tarihi
-  firstName: string;
-  lastName: string;
+interface DecodedToken {
+  sub: string;
+  role: string;
+  exp: number;
+  iat: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8080/api/auth';
+  private baseUrl = environment.apiUrl + '/auth';
   private currentUser: AuthResponse | null = null;
 
   constructor(
@@ -37,98 +37,55 @@ export class AuthService {
     private router: Router
   ) {}
 
-  register(userData: UserRequest, userType: 'DOCTOR' | 'PATIENT'): Observable<AuthResponse> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, { ...userData, userType }, { headers }).pipe(
-      tap((response: AuthResponse) => {
-        this.currentUser = response;
-        localStorage.setItem('token', response.token);
-        
-        // Token'ı decode et ve kullanıcı bilgilerini al
-        const decodedToken = this.getDecodedToken();
-        if (decodedToken) {
-          this.handleUserNavigation(decodedToken);
-        }
-      })
-    );
+  register(request: UserRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, request);
   }
 
-  login(loginData: UserRequest): Observable<AuthResponse> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    console.log('Login request payload:', loginData);
-
-    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, loginData, { headers }).pipe(
-      tap((response: AuthResponse) => {
-        console.log('Login response:', response);
-        this.currentUser = response;
-        localStorage.setItem('token', response.token);
-        
-        // Token'ı decode et ve kullanıcı bilgilerini al
-        const decodedToken = this.getDecodedToken();
-        if (decodedToken) {
-          this.handleUserNavigation(decodedToken);
-        }
-      })
-    );
+  login(request: UserRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, request)
+      .pipe(
+        tap(response => {
+          localStorage.setItem('token', response.token);
+          this.currentUser = response;
+          this.handleUserNavigation(this.decodeToken(response.token));
+        })
+      );
   }
 
-  // Token'ı decode et
-  getDecodedToken(): DecodedToken | null {
+  private decodeToken(token: string): DecodedToken | null {
+    if (!token) return null;
+    
     try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        return jwtDecode<DecodedToken>(token);
-      }
-      return null;
+      return jwtDecode<DecodedToken>(token);
     } catch (error) {
-      console.error('Token decode hatası:', error);
+      console.error('Token decode error:', error);
       return null;
     }
   }
 
-  // Kullanıcı rolüne göre yönlendirme yap
-  private handleUserNavigation(decodedToken: DecodedToken): void {
-    if (decodedToken.role.includes('ROLE_DOCTOR')) {
-      this.router.navigate(['/users']);
+  private handleUserNavigation(decodedToken: DecodedToken | null): void {
+    if (!decodedToken) {
+      this.router.navigate(['/sign-in']);
+      return;
+    }
+
+    console.log('Role from token:', decodedToken.role);
+
+    if (decodedToken.role === 'ROLE_DOCTOR') {
+      this.router.navigate(['/user']);
+    } else if (decodedToken.role === 'ROLE_USER' || decodedToken.role === 'ROLE_PATIENT') {
+      this.router.navigate(['/examinations']);
+      console.log('sebuf from service');
     } else {
-      this.router.navigate(['/test-results']);
+      // Eğer rol tanımlı değilse veya beklenmeyen bir rolse
+      this.router.navigate(['/']);
     }
-  }
-
-  // Kullanıcı bilgilerini al
-  getUserInfo(): { username: string, role: string[], firstName: string, lastName: string } | null {
-    const decodedToken = this.getDecodedToken();
-    if (decodedToken) {
-      return {
-        username: decodedToken.sub,
-        role: decodedToken.role,
-        firstName: decodedToken.firstName,
-        lastName: decodedToken.lastName
-      };
-    }
-    return null;
-  }
-
-  // Token'ın geçerlilik süresini kontrol et
-  isTokenValid(): boolean {
-    const decodedToken = this.getDecodedToken();
-    if (decodedToken) {
-      const currentTime = Date.now() / 1000;
-      return decodedToken.exp > currentTime;
-    }
-    return false;
   }
 
   logout(): void {
     this.currentUser = null;
     localStorage.removeItem('token');
-    this.router.navigate(['/login']);
+    this.router.navigate(['/sign-in']);
   }
 
   getCurrentUser(): AuthResponse | null {
@@ -139,9 +96,50 @@ export class AuthService {
     return !!localStorage.getItem('token') && this.isTokenValid();
   }
 
-  // Kullanıcı rolünü kontrol et
   hasRole(role: string): boolean {
-    const decodedToken = this.getDecodedToken();
-    return decodedToken ? decodedToken.role.includes(role) : false;
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    
+    const decodedToken = this.decodeToken(token);
+    return decodedToken ? decodedToken.role === role : false;
+  }
+
+  getUserRole(): string | null {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    const decodedToken = this.decodeToken(token);
+    return decodedToken?.role || null;
+  }
+
+  isTokenValid(): boolean {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+
+    const decodedToken = this.decodeToken(token);
+    if (decodedToken) {
+      const currentTime = Date.now() / 1000;
+      return decodedToken.exp > currentTime;
+    }
+    return false;
+  }
+
+  getDecodedToken(): DecodedToken | null {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    return this.decodeToken(token);
+  }
+
+  getUserInfo() {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    const decodedToken = this.decodeToken(token);
+    if (!decodedToken) return null;
+
+    return {
+      username: decodedToken.sub,
+      role: decodedToken.role
+    };
   }
 }

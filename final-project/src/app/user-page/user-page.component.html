@@ -16,21 +16,26 @@
       <h3>Menü</h3>
     </div>
     <div class="sidebar-content">
-      <ul>
+      <ul> 
         <li>
-          <a class="results">
+          <a [routerLink]="['/user']" routerLinkActive="router-link-active" class="user">
+            <i class="fas fa-file-medical"></i>
+            Muayene
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['/patients']" routerLinkActive="router-link-active" class="results">
             <i class="fas fa-file-medical"></i>
             Hastalar
           </a>
         </li>
-        <li>
-          <a [routerLink]="['/results']" routerLinkActive="router-link-active" class="results">
-            <i class="fas fa-file-medical"></i>
-            Sonuçlar
-          </a>
-        </li>
-        
       </ul>
+      <div class="sidebar-footer">
+        <a (click)="logout()" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          Çıkış Yap
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -129,6 +134,9 @@
 <!-- Tara Butonu -->
 <div class="scan-button-container">
   <button (click)="onUpload()" [disabled]="!selectedFile" class="scan-button">Tara</button>
+</div>
+<div class="scan-button-container">
+  <button (click)="yeniMuayene()" class="scan-button">Yeni Muayene</button>
 </div>
 
 <!-- Görüntü Önizleme ve İndirme Bölümü -->

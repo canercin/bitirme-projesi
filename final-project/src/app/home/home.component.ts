@@ -10,6 +10,6 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  
+
 }
 

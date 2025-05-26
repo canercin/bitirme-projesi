@@ -207,6 +207,23 @@ export class UserPageComponent implements OnInit {
     this.selectedPatientId = patientId;
     console.log('Selected patient:', patientId);
   }
+
+  logout(): void {
+    // Local storage'daki tüm verileri temizle
+    localStorage.clear();
+    // Ana sayfaya yönlendir
+    this.router.navigate(['/']);
+  }
+
+  yeniMuayene(): void {
+    this.selectedFile = null;
+    this.selectedImageUrl = null;
+    this.selectedPatientId = '';
+    this.selectedDiagnosis = '';
+    this.previewImage = '';
+    // Sayfayı yenile
+    window.location.reload();
+  }
 }
 
 

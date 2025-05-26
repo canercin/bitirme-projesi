@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.css']
 })
-export class SignInComponent {
+export class SignInComponent implements OnInit {
   loginForm: FormGroup;
   error: string = '';
 
@@ -22,6 +22,11 @@ export class SignInComponent {
       username: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
+  }
+
+  ngOnInit(): void {
+    // Local storage'daki tüm verileri temizle
+    localStorage.clear();
   }
 
   onSubmit(): void {
@@ -46,8 +51,6 @@ export class SignInComponent {
             console.log('Kullanıcı Bilgileri:');
             console.log('Kullanıcı Adı:', decodedToken.sub);
             console.log('Roller:', decodedToken.role);
-            console.log('Ad:', decodedToken.firstName);
-            console.log('Soyad:', decodedToken.lastName);
             console.log('Token Oluşturulma Tarihi:', new Date(decodedToken.iat * 1000).toLocaleString());
             console.log('Token Bitiş Tarihi:', new Date(decodedToken.exp * 1000).toLocaleString());
             
@@ -59,8 +62,8 @@ export class SignInComponent {
               // Role göre yönlendirme
               if (roleValue.includes('DOCTOR')) {
                 this.router.navigate(['/user']);
-              } else if (roleValue.includes('USER')) {
-                this.router.navigate(['/user2']);
+              } else if (roleValue.includes('ROLE_USER')) {
+                this.router.navigate(['/examinations']);
               } else {
                 console.warn('Tanımlanmamış rol:', roleValue);
                 // Varsayılan yönlendirme veya hata mesajı gösterme

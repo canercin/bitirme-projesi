@@ -1,0 +1,160 @@
+<div class="patients-container">
+  <!-- Header -->
+  <div class="header">
+    <h1><i class="fas fa-users"></i> Hasta Listesi</h1>
+    <div class="search-container">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="filterPatients()"
+        placeholder="Hasta ara..."
+        class="search-input"
+      >
+      <i class="fas fa-search search-icon"></i>
+    </div>
+  </div>
+
+  <!-- Toggle Button -->
+  <button class="global-toggle-btn" (click)="toggleSidebar()">
+    <div class="hamburger-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </button>
+
+  <!-- Sidebar -->
+  <div class="sidebar-container">
+    <div class="sidebar" [class.active]="isSidebarOpen">
+      <div class="sidebar-header">
+        <h3>Menü</h3>
+      </div>
+      <div class="sidebar-content">
+        <ul> 
+          <li>
+            <a [routerLink]="['/user']" routerLinkActive="router-link-active" class="user">
+              <i class="fas fa-file-medical"></i>
+              Muayene
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/patients']" routerLinkActive="router-link-active" class="results">
+              <i class="fas fa-file-medical"></i>
+              Hastalar
+            </a>
+          </li>
+        </ul>
+        <div class="sidebar-footer">
+          <a (click)="logout()" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            Çıkış Yap
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Yükleniyor...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="error">
+    <i class="fas fa-exclamation-circle"></i>
+    {{ error }}
+  </div>
+
+  <!-- Patients List -->
+  <div class="patients-list" *ngIf="!loading && !error">
+    <div class="patient-card" *ngFor="let patient of filteredPatients">
+      <div class="patient-info">
+        <div class="patient-content">
+          <div class="patient-header">
+            <h3>
+              <i class="fas fa-user-circle"></i>
+              {{ patient.firstName }} {{ patient.lastName }}
+            </h3>
+          </div>
+          <div class="patient-details">
+          </div>
+        </div>
+        <button class="details-button" data-bs-toggle="modal" data-bs-target="#patientDetailsModal" (click)="openPatientDetails(patient)">
+          <i class="fas fa-info-circle"></i>
+          Detaylar
+        </button>
+      </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div class="no-results" *ngIf="filteredPatients.length === 0">
+      <i class="fas fa-search"></i>
+      <p>Hasta bulunamadı</p>
+    </div>
+  </div>
+
+  <!-- Patient Details Modal -->
+  <div class="modal fade" id="patientDetailsModal" tabindex="-1" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="patientDetailsModalLabel">
+            <i class="fas fa-user-circle"></i>
+            Hasta Detayları
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedPatient">
+          <div class="patient-info-row">
+            <label><i class="fas fa-user"></i> Ad Soyad:</label>
+            <span>{{ selectedPatient.firstName }} {{ selectedPatient.lastName }}</span>
+          </div>
+
+          <div class="examinations-section" *ngIf="selectedPatient.examinations && selectedPatient.examinations.length > 0">
+            <h6 class="section-title">
+              <i class="fas fa-stethoscope"></i> Muayene Geçmişi
+            </h6>
+            
+            <div class="examination-list">
+              <div class="examination-card" *ngFor="let exam of selectedPatient.examinations">
+                <div class="examination-header">
+                  <div class="exam-date" *ngIf="exam.date">
+                    <i class="fas fa-calendar"></i>
+                    {{ exam.date | date:'dd/MM/yyyy HH:mm' }}
+                  </div>
+                  <div class="exam-status" *ngIf="!exam.date">
+                    <i class="fas fa-clock"></i>
+                    Tarih Bekleniyor
+                  </div>
+                  <div class="cancer-result" *ngIf="exam.result" [ngClass]="{'positive': exam.result.hasCancer, 'negative': !exam.result.hasCancer}">
+                    <i class="fas" [ngClass]="{'fa-exclamation-circle': exam.result.hasCancer, 'fa-check-circle': !exam.result.hasCancer}"></i>
+                    {{ exam.result.hasCancer ? 'Pozitif' : 'Negatif' }}
+                  </div>
+                  <div class="pending-result" *ngIf="!exam.result">
+                    <i class="fas fa-hourglass-half"></i>
+                    Sonuç Bekleniyor
+                  </div>
+                </div>
+                
+                <div class="diagnosis-info">
+                  <label><i class="fas fa-tag"></i> Kanser Tipi:</label>
+                  <span>{{ exam.diagnosis.name }}</span>
+                  <div class="diagnosis-type">Tip: {{ exam.diagnosis.type }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="no-examinations" *ngIf="!selectedPatient.examinations || selectedPatient.examinations.length === 0">
+            <i class="fas fa-info-circle"></i>
+            Henüz muayene kaydı bulunmamaktadır.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

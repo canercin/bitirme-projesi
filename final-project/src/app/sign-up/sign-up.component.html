@@ -16,9 +16,7 @@
             <h1>Kapsül-BioVision</h1>
             <p>Kayıt Ol</p>
         </div>
-        
-
-
+        <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
                 <label for="firstName">Ad</label>
                 <input
@@ -32,7 +30,6 @@
                     Ad gereklidir
                 </div>
             </div>
-
             <div class="form-group">
                 <label for="lastName">Soyad</label>
                 <input
@@ -46,46 +43,40 @@
                     Soyad gereklidir
                 </div>
             </div>
-
-            <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-              <div class="form-group">
-                  <label for="username">Kullanıcı Adı</label>
-                  <input
-                      type="text"
-                      id="username"
-                      formControlName="username"
-                      class="form-control"
-                      placeholder="Kullanıcı adınızı girin"
-                  >
-                  <div class="error-message" *ngIf="signUpForm.get('username')?.errors?.['required'] && signUpForm.get('username')?.touched">
-                      Kullanıcı adı gereklidir
-                  </div>
-              </div>
-  
-              <div class="form-group">
-                  <label for="password">Şifre</label>
-                  <input
-                      type="password"
-                      id="password"
-                      formControlName="password"
-                      class="form-control"
-                      placeholder="Şifrenizi girin"
-                  >
-                  <div class="error-message" *ngIf="signUpForm.get('password')?.errors?.['required'] && signUpForm.get('password')?.touched">
-                      Şifre gereklidir
-                  </div>
-                  <div class="error-message" *ngIf="signUpForm.get('password')?.errors?.['minlength'] && signUpForm.get('password')?.touched">
-                      Şifre en az 6 karakter olmalıdır
-                  </div>
-              </div>
-
+            <div class="form-group">
+                <label for="username">Kullanıcı Adı</label>
+                <input
+                    type="text"
+                    id="username"
+                    formControlName="username"
+                    class="form-control"
+                    placeholder="Kullanıcı adınızı girin"
+                >
+                <div class="error-message" *ngIf="signUpForm.get('username')?.errors?.['required'] && signUpForm.get('username')?.touched">
+                    Kullanıcı adı gereklidir
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input
+                    type="password"
+                    id="password"
+                    formControlName="password"
+                    class="form-control"
+                    placeholder="Şifrenizi girin"
+                >
+                <div class="error-message" *ngIf="signUpForm.get('password')?.errors?.['required'] && signUpForm.get('password')?.touched">
+                    Şifre gereklidir
+                </div>
+                <div class="error-message" *ngIf="signUpForm.get('password')?.errors?.['minlength'] && signUpForm.get('password')?.touched">
+                    Şifre en az 6 karakter olmalıdır
+                </div>
+            </div>
             <button type="submit" [disabled]="!signUpForm.valid">Kayıt Ol</button>
-
             <div *ngIf="error" class="error-message">
                 {{ error }}
             </div>
         </form>
-
         <div class="signin-link">
             <p>Zaten hesabın var mı? <a routerLink="/sign-in">Giriş Yap</a></p>
         </div>

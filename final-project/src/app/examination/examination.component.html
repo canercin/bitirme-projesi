@@ -1,0 +1,110 @@
+<div class="examinations-container">
+  <!-- Toggle Button -->
+  <button class="global-toggle-btn" (click)="toggleSidebar()">
+    <div class="hamburger-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </button>
+
+  <!-- Sidebar -->
+  <div class="sidebar-container">
+    <div class="sidebar" [class.active]="isSidebarOpen">
+      <div class="sidebar-header">
+        <h3>Menü</h3>
+      </div>
+      <div class="sidebar-content">
+        <ul> 
+          <li>
+            <a [routerLink]="['/examinations']" routerLinkActive="router-link-active" class="examinations">
+              <i class="fas fa-stethoscope"></i>
+              Muayene Sonuçları
+            </a>
+          </li>
+        </ul>
+        <div class="sidebar-footer">
+          <a (click)="logout()" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            Çıkış Yap
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header">
+    <h1><i class="fas fa-stethoscope"></i> Muayene Sonuçları</h1>
+    <div class="search-container">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="filterExaminations()"
+        placeholder="Kanser tipine göre ara..."
+        class="search-input"
+      >
+      <i class="fas fa-search search-icon"></i>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Muayene sonuçları yükleniyor...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="error">
+    <i class="fas fa-exclamation-circle"></i>
+    {{ error }}
+  </div>
+
+  <!-- Examinations List -->
+  <div class="examinations-list" *ngIf="!loading && !error && filteredExaminations.length > 0">
+    <div class="examination-card" *ngFor="let exam of filteredExaminations">
+      <div class="examination-header">
+        <div class="exam-date" *ngIf="exam.date">
+          <i class="fas fa-calendar"></i>
+          {{ exam.date | date:'dd/MM/yyyy HH:mm' }}
+        </div>
+        <div class="exam-status" *ngIf="!exam.date">
+          <i class="fas fa-clock"></i>
+          Tarih Bekleniyor
+        </div>
+        <div class="cancer-result" *ngIf="exam.result" [ngClass]="{'positive': exam.result.hasCancer, 'negative': !exam.result.hasCancer}">
+          <i class="fas" [ngClass]="{'fa-exclamation-circle': exam.result.hasCancer, 'fa-check-circle': !exam.result.hasCancer}"></i>
+          {{ exam.result.hasCancer ? 'Pozitif' : 'Negatif' }}
+        </div>
+        <div class="pending-result" *ngIf="!exam.result">
+          <i class="fas fa-hourglass-half"></i>
+          Sonuç Bekleniyor
+        </div>
+      </div>
+      
+      <div class="diagnosis-info">
+        <label><i class="fas fa-tag"></i> Kanser Tipi:</label>
+        <span>{{ exam.diagnosis.name }}</span>
+        <div class="diagnosis-type">Tip: {{ exam.diagnosis.type }}</div>
+      </div>
+
+      <div class="image-preview" *ngIf="exam.result">
+        <div class="image-container">
+          <div class="image-box">
+            <h4>Orijinal Görüntü</h4>
+            <img [src]="exam.result.originalImagePath" alt="Orijinal görüntü" class="preview-image">
+          </div>
+          <div class="image-box">
+            <h4>Sonuç Görüntüsü</h4>
+            <img [src]="exam.result.resultImagePath" alt="Sonuç görüntüsü" class="preview-image">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Examinations Message -->
+  <div class="no-examinations" *ngIf="!loading && !error && filteredExaminations.length === 0">
+    <i class="fas fa-info-circle"></i>
+    <p>{{ searchTerm ? 'Arama kriterine uygun muayene kaydı bulunamadı.' : 'Henüz muayene kaydı bulunmamaktadır.' }}</p>
+  </div>
+</div>
