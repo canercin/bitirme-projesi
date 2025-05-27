@@ -91,11 +91,11 @@
         <div class="image-container">
           <div class="image-box">
             <h4>Orijinal Görüntü</h4>
-            <img [src]="exam.result.originalImagePath" alt="Orijinal görüntü" class="preview-image">
+            <img [src]="'http://172.20.10.12:8080/original/' + exam.result.originalImagePath" alt="Orijinal görüntü" class="preview-image">
           </div>
           <div class="image-box">
             <h4>Sonuç Görüntüsü</h4>
-            <img [src]="exam.result.resultImagePath" alt="Sonuç görüntüsü" class="preview-image">
+            <img [src]="'http://172.20.10.12:8080/masked/' + exam.result.resultImagePath" alt="Sonuç görüntüsü" class="preview-image">
           </div>
         </div>
       </div>

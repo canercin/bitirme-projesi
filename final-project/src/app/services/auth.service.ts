@@ -38,7 +38,7 @@ export class AuthService {
   ) {}
 
   register(request: UserRequest): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, request);
+    return this.http.post(`http://172.20.10.12:8080/api/patient`, request);
   }
 
   login(request: UserRequest): Observable<AuthResponse> {

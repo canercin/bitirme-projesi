@@ -2,12 +2,12 @@
   <div class="image-container">
     <div class="image-box">
       <h3>Orijinal Görüntü</h3>
-      <img [src]="'http://localhost:5000/uploads/' + originalImagePath" alt="Orijinal Görüntü" class="result-image">
+      <img [src]="'http://172.20.10.12:8080/original/' + originalImagePath" alt="Orijinal Görüntü" class="result-image">
     </div>
     
     <div class="image-box">
       <h3>Segmentasyon Sonucu</h3>
-      <img [src]="'http://localhost:5000/results/' + resultImagePath" alt="Segmentasyon Sonucu" class="result-image">
+      <img [src]="'http://172.20.10.12:8080/masked/' + resultImagePath" alt="Segmentasyon Sonucu" class="result-image">
     </div>
   </div>
 
@@ -21,22 +21,6 @@
     </div>
   </div>
 
-  <div class="score-section">
-    <div class="score-header">
-      <h3>Analiz Sonuçları</h3>
-    </div>
-    <div class="score-content">
-      <div class="score-item">
-        <span class="score-label">Güven Skoru</span>
-        <div class="score-bar">
-          <div class="score-fill" style="width: 85%">
-            <span class="score-value">85%</span>
-          </div>
-        </div>
-      </div>
-      
-    </div>
-  </div>
 
   <div class="bottom-center-button">
     <button (click)="muayeneSayfasinaDon()">Muayene Sayfasına Dön</button>
