@@ -13,11 +13,11 @@ export class ExaminationService {
   constructor(private http: HttpClient) { }
 
   getAllExaminations(): Observable<Examination[]> {
-    return this.http.get<Examination[]>(this.apiUrl);
+    return this.http.get<Examination[]>(this.apiUrl + '/patient');
   }
 
   getExaminationById(id: string): Observable<Examination> {
-    return this.http.get<Examination>(`${this.apiUrl}/${id}`);
+    return this.http.get<Examination>(`${this.apiUrl + 'patient'}/${id}`);
   }
 
   createExamination(originalImage: File, patientID: string, diagnosisID: string): Observable<any> {

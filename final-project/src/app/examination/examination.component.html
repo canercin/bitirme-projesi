@@ -93,7 +93,7 @@
             <h4>Orijinal Görüntü</h4>
             <img [src]="'http://172.20.10.12:8080/original/' + exam.result.originalImagePath" alt="Orijinal görüntü" class="preview-image">
           </div>
-          <div class="image-box">
+          <div class="image-box" *ngIf="exam.diagnosis.name === 'Cilt Kanseri'">
             <h4>Sonuç Görüntüsü</h4>
             <img [src]="'http://172.20.10.12:8080/masked/' + exam.result.resultImagePath" alt="Sonuç görüntüsü" class="preview-image">
           </div>

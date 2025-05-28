@@ -9,18 +9,30 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class User2PageComponent implements OnInit {
   originalImagePath: string = '';
   resultImagePath: string = '';
+  cancerType: string = '';
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    // URL'den görüntü yollarını al
+    // URL'den görüntü yollarını ve kanser tipini al
     this.route.queryParams.subscribe(params => {
       this.originalImagePath = params['original_filename'];
       this.resultImagePath = params['result_filename'];
+      this.cancerType = params['cancer_type'] || '';
     });
   }
 
   muayeneSayfasinaDon(): void {
     this.router.navigate(['/user']);
+  }
+
+  islemGoruntule(): void {
+    // İşlem detaylarını görüntüleme sayfasına yönlendir
+    this.router.navigate(['/user3'], {
+      queryParams: {
+        original_filename: this.originalImagePath,
+        result_filename: this.resultImagePath
+      }
+    });
   }
 }

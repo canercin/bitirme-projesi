@@ -1,4 +1,6 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ExaminationService } from '../services/examination.service';
 
 @Component({
   selector: 'app-user3-page',
@@ -10,6 +12,11 @@ export class User3PageComponent implements AfterViewInit {
   isPaused: boolean = false;
   isPlaying: boolean = false;
   stream: MediaStream | null = null;
+
+  constructor(
+    private router: Router,
+    private examinationService: ExaminationService
+  ) {}
 
   async startCamera() {
     try {
@@ -68,5 +75,17 @@ export class User3PageComponent implements AfterViewInit {
     if (this.stream) {
       this.stream.getTracks().forEach(track => track.stop());
     }
+  }
+
+  muayeneSayfasinaDon(): void {
+    this.examinationService.getExaminationById('patient').subscribe({
+      next: (response) => {
+        this.router.navigate(['/user']);
+      },
+      error: (error) => {
+        console.error('API isteği hatası:', error);
+        this.router.navigate(['/user']);
+      }
+    });
   }
 }

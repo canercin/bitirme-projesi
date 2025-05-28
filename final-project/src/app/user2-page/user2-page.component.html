@@ -5,7 +5,7 @@
       <img [src]="'http://172.20.10.12:8080/original/' + originalImagePath" alt="Orijinal Görüntü" class="result-image">
     </div>
     
-    <div class="image-box">
+    <div class="image-box" *ngIf="resultImagePath && cancerType === 'cilt kanseri'">
       <h3>Segmentasyon Sonucu</h3>
       <img [src]="'http://172.20.10.12:8080/masked/' + resultImagePath" alt="Segmentasyon Sonucu" class="result-image">
     </div>
@@ -24,5 +24,6 @@
 
   <div class="bottom-center-button">
     <button (click)="muayeneSayfasinaDon()">Muayene Sayfasına Dön</button>
+    <button (click)="islemGoruntule()" class="view-process-btn">İşlemi Görüntüle</button>
   </div>
 </div>

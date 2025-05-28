@@ -151,3 +151,29 @@
     justify-content: center;
   }
 }
+
+.bottom-center-button {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.bottom-center-button button {
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #52534b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  min-width: 200px;
+}
+
+.bottom-center-button button:hover {
+  background-color: #1a1c1d;
+}

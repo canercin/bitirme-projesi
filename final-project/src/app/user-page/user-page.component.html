@@ -102,7 +102,7 @@
       <div *ngFor="let patient of filteredPatients" class="patient-item" (click)="onPatientSelect(patient.id)" [class.selected]="selectedPatientId === patient.id">
         <div class="patient-info">
           <span class="patient-name">{{patient.firstName}} {{patient.lastName}}</span>
-          <span class="patient-details">ID: {{patient.id}}</span>
+          <!-- <span class="patient-details">ID: {{patient.id}}</span> -->
         </div>
       </div>
       <div *ngIf="filteredPatients.length === 0" class="no-results">
