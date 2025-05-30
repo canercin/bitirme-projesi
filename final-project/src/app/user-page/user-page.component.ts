@@ -29,6 +29,7 @@ export class UserPageComponent implements OnInit {
   searchTerm: string = '';
   diagnoses: Diagnosis[] = [];
   selectedDiagnosis: string = '';
+  selectedDiagnosisName: string = '';
   selectedPatientId: string = '';
 
   // Webcam tetikleyicisini döndürüyoruz
@@ -133,7 +134,8 @@ export class UserPageComponent implements OnInit {
             this.router.navigate(['/user2'], {
               queryParams: {
                 original_filename: response.result.originalImagePath,
-                result_filename: response.result.resultImagePath
+                result_filename: response.result.resultImagePath,
+                cancer_type: this.selectedDiagnosisName
               }
             });
           } else {
@@ -199,8 +201,12 @@ export class UserPageComponent implements OnInit {
   }
 
   onDiagnosisChange(event: any): void {
-    this.selectedDiagnosis = event.target.value;
-    console.log('Selected diagnosis:', this.selectedDiagnosis);
+    const diagnosisId = event.target.value;
+    this.selectedDiagnosis = diagnosisId;
+    // Find the diagnosis name from the diagnoses array
+    const diagnosis = this.diagnoses.find(d => d.id.toString() === diagnosisId);
+    this.selectedDiagnosisName = diagnosis ? diagnosis.name : '';
+    console.log('Selected diagnosis:', this.selectedDiagnosisName);
   }
 
   onPatientSelect(patientId: string): void {
@@ -220,6 +226,7 @@ export class UserPageComponent implements OnInit {
     this.selectedImageUrl = null;
     this.selectedPatientId = '';
     this.selectedDiagnosis = '';
+    this.selectedDiagnosisName = '';
     this.previewImage = '';
     // Sayfayı yenile
     window.location.reload();
