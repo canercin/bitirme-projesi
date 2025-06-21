@@ -38,7 +38,7 @@ export class AuthService {
   ) {}
 
   register(request: UserRequest): Observable<any> {
-    return this.http.post(`http://172.20.10.12:8080/api/patient`, request);
+    return this.http.post(`http://localhost:8081/api/patient`, request);
   }
 
   login(request: UserRequest): Observable<AuthResponse> {
@@ -54,7 +54,7 @@ export class AuthService {
 
   private decodeToken(token: string): DecodedToken | null {
     if (!token) return null;
-    
+
     try {
       return jwtDecode<DecodedToken>(token);
     } catch (error) {
@@ -99,7 +99,7 @@ export class AuthService {
   hasRole(role: string): boolean {
     const token = localStorage.getItem('token');
     if (!token) return false;
-    
+
     const decodedToken = this.decodeToken(token);
     return decodedToken ? decodedToken.role === role : false;
   }

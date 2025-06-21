@@ -15,7 +15,7 @@
         <h3>Menü</h3>
       </div>
       <div class="sidebar-content">
-        <ul> 
+        <ul>
           <li>
             <a [routerLink]="['/examinations']" routerLinkActive="router-link-active" class="examinations">
               <i class="fas fa-stethoscope"></i>
@@ -36,9 +36,9 @@
   <div class="header">
     <h1><i class="fas fa-stethoscope"></i> Muayene Sonuçları</h1>
     <div class="search-container">
-      <input 
-        type="text" 
-        [(ngModel)]="searchTerm" 
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
         (input)="filterExaminations()"
         placeholder="Kanser tipine göre ara..."
         class="search-input"
@@ -80,7 +80,7 @@
           Sonuç Bekleniyor
         </div>
       </div>
-      
+
       <div class="diagnosis-info">
         <label><i class="fas fa-tag"></i> Kanser Tipi:</label>
         <span>{{ exam.diagnosis.name }}</span>
@@ -91,11 +91,11 @@
         <div class="image-container">
           <div class="image-box">
             <h4>Orijinal Görüntü</h4>
-            <img [src]="'http://172.20.10.12:8080/original/' + exam.result.originalImagePath" alt="Orijinal görüntü" class="preview-image">
+            <img [src]="'http://localhost:8081/original/' + exam.result.originalImagePath" alt="Orijinal görüntü" class="preview-image">
           </div>
           <div class="image-box" *ngIf="exam.diagnosis.name === 'Cilt Kanseri'">
             <h4>Sonuç Görüntüsü</h4>
-            <img [src]="'http://172.20.10.12:8080/masked/' + exam.result.resultImagePath" alt="Sonuç görüntüsü" class="preview-image">
+            <img [src]="'http://localhost:8081/masked/' + exam.result.resultImagePath" alt="Sonuç görüntüsü" class="preview-image">
           </div>
         </div>
       </div>

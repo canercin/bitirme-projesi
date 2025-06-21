@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ExaminationService } from '../services/examination.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-user3-page',
@@ -12,11 +13,19 @@ export class User3PageComponent implements AfterViewInit {
   isPaused: boolean = false;
   isPlaying: boolean = false;
   stream: MediaStream | null = null;
+  isProcessStarted: boolean = false;
+  gcodeFilename: string = '';
 
   constructor(
     private router: Router,
-    private examinationService: ExaminationService
-  ) {}
+    private examinationService: ExaminationService,
+    private http: HttpClient,
+    private route: ActivatedRoute
+  ) {
+    this.route.queryParams.subscribe(params => {
+      this.gcodeFilename = params['original_filename'] || '';
+    });
+  }
 
   async startCamera() {
     try {
@@ -37,41 +46,40 @@ export class User3PageComponent implements AfterViewInit {
   }
 
   stopVideo() {
-    if (this.videoPlayer && this.stream) {
-      this.videoPlayer.nativeElement.pause();
-      this.stream.getTracks().forEach(track => track.stop());
-      this.isPlaying = false;
-      this.isPaused = false;
-      this.stream = null;
-    }
+    // Sadece işlemi durdur API isteği gönder, kamera akışını durdurma
+    this.http.get('http://localhost:8081/api/gcode/cancel', {}).subscribe({
+      next: () => {},
+      error: (err) => { console.error('Cancel error:', err); }
+    });
+    // Kamera akışı devam etsin, video durmasın
+    this.isPlaying = true;
+    this.isPaused = false;
   }
 
   async togglePause() {
     if (this.isPaused) {
-      if (!this.stream) {
-        await this.startCamera();
-      } else {
-        this.stream.getTracks().forEach(track => track.enabled = true);
-        this.videoPlayer.nativeElement.play()
-          .then(() => {
-            this.isPaused = false;
-            this.isPlaying = true;
-          })
-          .catch(error => {
-            console.error('Video oynatma hatası:', error);
-          });
-      }
+      // Devam Et: API isteği gönder
+      this.http.get('http://localhost:8081/api/gcode/resume', {}).subscribe({
+        next: () => {},
+        error: (err) => { console.error('Resume error:', err); }
+      });
+      // Kamera akışı zaten devam ediyor, ekstra işlem yok
+      this.isPaused = false;
+      this.isPlaying = true;
     } else {
-      if (this.videoPlayer && this.stream) {
-        this.stream.getTracks().forEach(track => track.enabled = false);
-        this.videoPlayer.nativeElement.pause();
-        this.isPaused = true;
-        this.isPlaying = false;
-      }
+      // Duraklat: API isteği gönder
+      this.http.get('http://localhost:8081/api/gcode/pause', {}).subscribe({
+        next: () => {},
+        error: (err) => { console.error('Pause error:', err); }
+      });
+      // Kamera akışı devam etsin, video durmasın
+      this.isPaused = true;
+      this.isPlaying = false;
     }
   }
 
   ngOnDestroy() {
+    // Sadece sayfa kapanırken kamera akışını durdur
     if (this.stream) {
       this.stream.getTracks().forEach(track => track.stop());
     }
@@ -87,5 +95,18 @@ export class User3PageComponent implements AfterViewInit {
         this.router.navigate(['/user']);
       }
     });
+  }
+
+  startProcess() {
+    this.isProcessStarted = true;
+    if (this.gcodeFilename) {
+      const url = `http://localhost:8081/api/gcode/process/${this.gcodeFilename}`;
+      this.http.get(url, {}).subscribe({
+        next: () => {},
+        error: (err) => { console.error('Process start error:', err); }
+      });
+    } else {
+      console.error('No gcode filename provided in query params.');
+    }
   }
 }

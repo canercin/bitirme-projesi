@@ -128,6 +128,20 @@
   transform: translateY(-2px);
 }
 
+.green-btn {
+  background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(67, 233, 123, 0.2);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.green-btn:hover {
+  background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
+  transform: scale(1.05);
+}
+
 @media (max-width: 768px) {
   .user3-container {
     padding: 1rem;

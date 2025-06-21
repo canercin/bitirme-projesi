@@ -9,18 +9,30 @@
   </div>
 
   <div class="control-section">
-    <button class="control-btn stop" (click)="stopVideo()" [disabled]="!isPlaying && !isPaused">
-      <i class="fas fa-stop"></i>
-      <span>İşlemi Durdur</span>
-    </button>
-    <button class="control-btn pause" (click)="togglePause()" [disabled]="!isPlaying && !isPaused" *ngIf="!isPaused">
-      <i class="fas fa-pause"></i>
-      <span>Durdur</span>
-    </button>
-    <button class="control-btn resume" (click)="togglePause()" [disabled]="false" *ngIf="isPaused">
+    <!-- Show only the start button if process not started -->
+    <button
+      *ngIf="!isProcessStarted"
+      class="control-btn start green-btn"
+      (click)="startProcess()"
+    >
       <i class="fas fa-play"></i>
-      <span>Devam Et</span>
+      <span>İşlemi Başlat</span>
     </button>
+    <!-- Show other buttons only if process started -->
+    <ng-container *ngIf="isProcessStarted">
+      <button class="control-btn stop" (click)="stopVideo()" [disabled]="!isPlaying && !isPaused">
+        <i class="fas fa-stop"></i>
+        <span>İşlemi Durdur</span>
+      </button>
+      <button class="control-btn pause" (click)="togglePause()" [disabled]="!isPlaying && !isPaused" *ngIf="!isPaused">
+        <i class="fas fa-pause"></i>
+        <span>Durdur</span>
+      </button>
+      <button class="control-btn resume" (click)="togglePause()" [disabled]="false" *ngIf="isPaused">
+        <i class="fas fa-play"></i>
+        <span>Devam Et</span>
+      </button>
+    </ng-container>
   </div>
 
   <div class="bottom-center-button">

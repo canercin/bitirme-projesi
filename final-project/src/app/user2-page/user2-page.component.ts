@@ -35,4 +35,14 @@ export class User2PageComponent implements OnInit {
       }
     });
   }
+
+  gcodeSayfasinaGec(): void {
+    // originalImagePath'in uzantısını .gcode olarak değiştir
+    let gcodeFilename = this.originalImagePath.replace(/\.[^/.]+$/, '.gcode');
+    this.router.navigate(['/user3'], {
+      queryParams: {
+        original_filename: gcodeFilename
+      }
+    });
+  }
 }
